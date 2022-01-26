@@ -7,11 +7,13 @@ import { useState, useEffect } from 'react';
 import ItensListaTarefas from './itens-lista-tarefas';
 import Paginacao from './paginacao';
 import Ordenacao from './ordenacao';
+import axios from 'axios';
 
 function ListarTarefas() {
   const history = useHistory();
 
   const ITENS_POR_PAGINA = 3;
+  const API_URL_LISTAR_TAREFAS = 'http://localhost:3001/gerenciador-tarefas';
 
   const [tarefas, setTarefas] = useState([]);
   const [carregarTarefas, setCarregarTarefas] = useState(true);
@@ -22,36 +24,16 @@ function ListarTarefas() {
   const [filtroTarefa, setFiltroTarefa] = useState('');
 
   useEffect(() => {
-    function obterTarefas() {
-      const tarefasDb = localStorage['tarefas'];
-      let listarTarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-
-      //fitrar
-      listarTarefas = listarTarefas.filter(
-        (t) => t.nome.toLowerCase().indexOf(filtroTarefa.toLowerCase()) === 0
-      );
-
-      //ordenar
-      if (ordenarAsc) {
-        listarTarefas.sort((t1, t2) =>
-          t1.nome.toLowerCase() > t2.nome.toLowerCase() ? 1 : -1
-        );
-      } else if (ordenarDesc) {
-        listarTarefas.sort((t1, t2) =>
-          t1.nome.toLowerCase() < t2.nome.toLowerCase() ? 1 : -1
-        );
+    async function obterTarefas() {
+      try {
+        let { data } = await axios.get(API_URL_LISTAR_TAREFAS);
+        setTotalItens(data.totalItens);
+        setTarefas(data.tarefas);
+      } catch (error) {
+        setTarefas([]);
       }
-
-      //paginar
-      setTotalItens(listarTarefas.length);
-      setTarefas(
-        listarTarefas.splice(
-          (paginaAtual - 1) * ITENS_POR_PAGINA,
-          ITENS_POR_PAGINA
-        )
-      );
-      // console.log(listarTarefas);
     }
+
     if (carregarTarefas) {
       obterTarefas();
       setCarregarTarefas(false);
