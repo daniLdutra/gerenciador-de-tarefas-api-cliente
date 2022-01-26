@@ -22,6 +22,7 @@ function AtualizarTarefa(props) {
   const [exibirModal, setExibirModal] = useState(false);
   const [formValidado, setFormValiado] = useState(false);
   const [carregarTarefa, setCarregarTarefa] = useState(true);
+  const [exibirModalErro, setExibirModalErro] = useState(false);
 
   useEffect(() => {
     const { id } = props.match.params;
@@ -40,6 +41,10 @@ function AtualizarTarefa(props) {
 
   function handleFecharModal() {
     history.push('/');
+  }
+
+  function handleFecharModalErro() {
+    setExibirModalErro(false);
   }
 
   function atualizar(event) {
@@ -114,6 +119,20 @@ function AtualizarTarefa(props) {
           <ModalFooter>
             <Button className="btn btn-success" onClick={handleFecharModal}>
               Continuar
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal show={exibirModalErro} onHide={handleFecharModalErro}>
+          <Modal.Header closeButton>
+            <ModalTitle>Erro</ModalTitle>
+          </Modal.Header>
+          <ModalBody>
+            Erro ao atualizar tarefa, tente novamente em instantes.
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="warning" onClick={handleFecharModalErro}>
+              Fechar
             </Button>
           </ModalFooter>
         </Modal>
