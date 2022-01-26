@@ -21,6 +21,7 @@ function CadastrarTarefa() {
   const [tarefa, setTarefa] = useState('');
   const [formValidado, setFormValidado] = useState(false);
   const [exibirModal, setExibirModal] = useState(false);
+  const [exibirModalErro, setExibirModalErro] = useState(false);
 
   function cadastrar(event) {
     event.preventDefault();
@@ -40,6 +41,10 @@ function CadastrarTarefa() {
 
   function handleFecharModal() {
     history.push('/');
+  }
+
+  function handleFecharModalErro() {
+    setExibirModalErro(false);
   }
 
   return (
@@ -84,6 +89,20 @@ function CadastrarTarefa() {
           <ModalFooter>
             <Button variant="success" onClick={handleFecharModal}>
               Continuar
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+        <Modal show={exibirModalErro} onHide={handleFecharModalErro}>
+          <Modal.Header closeButton>
+            <ModalTitle>Erro</ModalTitle>
+          </Modal.Header>
+          <ModalBody>
+            Erro ao adicionar tarefa, tente novamente em instantes.
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="warning" onClick={handleFecharModalErro}>
+              Fechar
             </Button>
           </ModalFooter>
         </Modal>
