@@ -25,8 +25,16 @@ function ListarTarefas() {
 
   useEffect(() => {
     async function obterTarefas() {
+      //ordem
+      let ordem = '';
+      if (ordenarAsc) {
+        ordem = 'ASC';
+      } else if (ordenarDesc) {
+        ordem = 'DESC';
+      }
+      const params = `?pag=${paginaAtual}&ordem=${ordem}&filtro-tarefa=${filtroTarefa}`;
       try {
-        let { data } = await axios.get(API_URL_LISTAR_TAREFAS);
+        let { data } = await axios.get(API_URL_LISTAR_TAREFAS + params);
         setTotalItens(data.totalItens);
         setTarefas(data.tarefas);
       } catch (error) {
