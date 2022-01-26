@@ -14,9 +14,13 @@ import {
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Tarefa from '../models/tarefa.models';
 
 function AtualizarTarefa(props) {
   const history = useHistory();
+
+  const API_URL_TAREFAS = 'http://localhost:3001/gerenciador-tarefas/';
 
   const [tarefa, setTarefa] = useState('');
   const [exibirModal, setExibirModal] = useState(false);
@@ -25,13 +29,20 @@ function AtualizarTarefa(props) {
   const [exibirModalErro, setExibirModalErro] = useState(false);
 
   useEffect(() => {
-    const { id } = props.match.params;
-    const tarefasDb = localStorage['tarefas'];
-    const tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-    const tarefa = tarefas.filter((t) => t.id === parseInt(id))[0];
+    async function obterTarefa() {
+      const { id } = props.match.params;
+      try {
+        let { data } = await axios.get(API_URL_TAREFAS + id);
+        setTarefa(data.nome);
+      } catch (error) {
+        setExibirModalErro(true);
+      }
+    }
 
-    setTarefa(tarefa.nome);
-    setCarregarTarefa(false);
+    if (carregarTarefa) {
+      obterTarefa();
+      setCarregarTarefa(false);
+    }
   }, [carregarTarefa, props]);
 
   function voltar(event) {
@@ -47,25 +58,18 @@ function AtualizarTarefa(props) {
     setExibirModalErro(false);
   }
 
-  function atualizar(event) {
+  async function atualizar(event) {
     event.preventDefault();
     const { id } = props.match.params;
-
     setFormValiado(true);
     if (event.currentTarget.checkValidity()) {
-      //obtem as tarefas
-      const tarefasDb = localStorage['tarefas'];
-      let tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-
-      //alterar e atualizar tarefa
-      tarefas = tarefas.map((tarefasObj) => {
-        if (tarefasObj.id === parseInt(id)) {
-          tarefasObj.nome = tarefa;
-        }
-        return tarefasObj;
-      });
-      localStorage['tarefas'] = JSON.stringify(tarefas);
-      setExibirModal(true);
+      try {
+        const tarefaAtualizar = new Tarefa(null, tarefa, false);
+        await axios.put(API_URL_TAREFAS + id, tarefaAtualizar);
+        setExibirModal(true);
+      } catch (error) {
+        setExibirModalErro(true);
+      }
     }
   }
   function handleTxtTarefa({ target }) {
