@@ -9,9 +9,14 @@ import {
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClipboardCheck } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 function ConcluirTarefa(props) {
   const [exibirModal, setExibirModal] = useState(false);
+  const [exibirModalErro, setExibirModalErro] = useState(false);
+
+  const API_URL_CONCLUIR_TAREFA =
+    'http://localhost:3001/gerenciador-tarefas/:id/concluir';
 
   function handleAbrirModal(event) {
     event.preventDefault();
@@ -22,19 +27,21 @@ function ConcluirTarefa(props) {
     setExibirModal(false);
   }
 
-  function handleConcluirTarefa(event) {
+  function handleFecharModalErro() {
+    setExibirModalErro(false);
+  }
+
+  async function handleConcluirTarefa(event) {
     event.preventDefault();
-    const tarefasDb = localStorage['tarefas'];
-    let tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-    tarefas = tarefas.map((tarefa) => {
-      if (tarefa.id === props.tarefa.id) {
-        tarefa.concluida = true;
-      }
-      return tarefa;
-    });
-    localStorage['tarefas'] = JSON.stringify(tarefas);
-    setExibirModal(false);
-    props.recarregarTarefas(true);
+
+    try {
+      await axios.put(API_URL_CONCLUIR_TAREFA.replace(':id', props.tarefa.id));
+      setExibirModal(false);
+      props.recarregarTarefas(true);
+    } catch (error) {
+      setExibirModal(false);
+      setExibirModalErro(true);
+    }
   }
 
   return (
@@ -71,6 +78,19 @@ function ConcluirTarefa(props) {
             Não
           </Button>
         </ModalFooter>
+      </Modal>
+      <Modal show={exibirModalErro} onHide={handleFecharModalErro}>
+        <Modal.Header closeButton>
+          <ModalTitle>Erro</ModalTitle>
+          <ModalBody>
+            Erro ao concluir a tarefa, tente novamente em instantes.
+          </ModalBody>
+          <ModalFooter>
+            <Button variant="warning" onClick={handleFecharModalErro}>
+              Fechar
+            </Button>
+          </ModalFooter>
+        </Modal.Header>
       </Modal>
     </span>
   );
