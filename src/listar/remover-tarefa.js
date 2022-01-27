@@ -9,10 +9,13 @@ import {
 } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import axios from 'axios';
 
 function RemoverTarefa(props) {
   const [exibirModal, setExibirModal] = useState(false);
   const [exibirModalErro, setExibirModalErro] = useState(false);
+
+  const API_URL_REMOVER_TAREFA = 'http://localhost:3001/gerenciador-tarefas/';
 
   function handleAbrirModal(event) {
     event.preventDefault();
@@ -27,14 +30,17 @@ function RemoverTarefa(props) {
     setExibirModalErro(false);
   }
 
-  function handleRemoverTarefa(event) {
+  async function handleRemoverTarefa(event) {
     event.preventDefault();
-    const tarefasDb = localStorage['tarefas'];
-    let tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-    tarefas = tarefas.filter((tarefa) => tarefa.id !== props.tarefa.id);
-    localStorage['tarefas'] = JSON.stringify(tarefas);
-    setExibirModal(false);
-    props.recarregarTarefas(true);
+
+    try {
+      await axios.delete(API_URL_REMOVER_TAREFA + props.tarefa.id);
+      setExibirModal(false);
+      props.recarregarTarefas(true);
+    } catch (error) {
+      setExibirModal(false);
+      setExibirModalErro(true);
+    }
   }
 
   return (
