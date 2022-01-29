@@ -3,39 +3,36 @@ import ListarTarefas from './listar-tarefas';
 import Tarefa from '../models/tarefa.models';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
+import axiosMock from 'axios';
 
-describe.skip('teste de componente de listagem de tarefas', () => {
+describe('teste de componente de listagem de tarefas', () => {
   const nomePrimeiraTarefa = 'Primeira tarefa';
   const nomeSegundaTarefa = 'Segunda tarefa';
   const nomeTerceiraTarefa = 'Terceira tarefa';
 
-  beforeEach(() => {
-    localStorage['tarefas'] = JSON.stringify([
+  const listarTarefas = {
+    totalItens: 3,
+    tarefas: [
       new Tarefa(1, nomePrimeiraTarefa, false),
       new Tarefa(2, nomeSegundaTarefa, false),
       new Tarefa(3, nomeTerceiraTarefa, false),
-    ]);
-  });
+    ],
+    pagina: 1,
+  };
 
-  afterEach(() => {
-    delete localStorage['tarefas'];
-  });
+  it('deve exibir uma tabela contendo 3 tarefas', async () => {
+    axiosMock.get.mockResolvedValueOnce({
+      data: listarTarefas,
+    });
 
-  it('deve renderizar o componente sem erros', () => {
-    const div = document.createElement('div');
-    ReactDOM.render(<ListarTarefas />, div);
-    ReactDOM.unmountComponentAtNode(div);
-  });
-
-  it('deve exibir uma tabela contendo 3 tarefas', () => {
-    const { getByTestId } = render(<ListarTarefas />);
-    const tabela = getByTestId('tabela');
+    const { findByTestId } = render(<ListarTarefas />);
+    const tabela = await findByTestId('tabela');
     expect(tabela).toHaveTextContent(nomePrimeiraTarefa);
     expect(tabela).toHaveTextContent(nomeSegundaTarefa);
     expect(tabela).toHaveTextContent(nomeTerceiraTarefa);
   });
 
-  it('deve filtrar os dados da tabela de tarefas', () => {
+  it.skip('deve filtrar os dados da tabela de tarefas', () => {
     const { getByTestId } = render(<ListarTarefas />);
     fireEvent.change(getByTestId('txt-tarefa'), {
       target: { value: nomePrimeiraTarefa },
