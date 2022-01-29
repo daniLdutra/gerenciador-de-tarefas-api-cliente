@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-describe('Teste do componente de remocao de tarefas', () => {
+describe.skip('Teste do componente de remocao de tarefas', () => {
   const nomeTarefa = 'Tarefa de teste';
   const tarefa = Tarefa(1, nomeTarefa, false);
 

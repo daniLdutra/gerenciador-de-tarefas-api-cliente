@@ -4,7 +4,7 @@ import ConcluirTarefa from './concluir-tarefa';
 import Tarefa from '../models/tarefa.models';
 import '@testing-library/jest-dom/extend-expect';
 
-describe('Teste do componente de conclusão de tarefas', () => {
+describe.skip('Teste do componente de conclusão de tarefas', () => {
   const nomeTarefa = 'Tarefa de teste';
   const tarefa = new Tarefa(1, nomeTarefa, false);
 

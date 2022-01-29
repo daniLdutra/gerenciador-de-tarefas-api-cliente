@@ -4,7 +4,7 @@ import Tarefa from '../models/tarefa.models';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-describe('Teste do componente que exibe um item da listagem de tarefas', () => {
+describe.skip('Teste do componente que exibe um item da listagem de tarefas', () => {
   const nomeTarefa = 'Tarefa';
   const tarefa = Tarefa(1, nomeTarefa, false);
   const tarefaConcluida = Tarefa(2, nomeTarefa, true);

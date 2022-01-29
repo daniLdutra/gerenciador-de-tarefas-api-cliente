@@ -4,7 +4,7 @@ import Tarefa from '../models/tarefa.models';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
-describe('teste de componente de listagem de tarefas', () => {
+describe.skip('teste de componente de listagem de tarefas', () => {
   const nomePrimeiraTarefa = 'Primeira tarefa';
   const nomeSegundaTarefa = 'Segunda tarefa';
   const nomeTerceiraTarefa = 'Terceira tarefa';
