@@ -32,12 +32,22 @@ describe('teste de componente de listagem de tarefas', () => {
     expect(tabela).toHaveTextContent(nomeTerceiraTarefa);
   });
 
-  it.skip('deve filtrar os dados da tabela de tarefas', () => {
-    const { getByTestId } = render(<ListarTarefas />);
-    fireEvent.change(getByTestId('txt-tarefa'), {
+  it('deve filtrar os dados da tabela de tarefas', async () => {
+    axiosMock.get.mockResolvedValueOnce({ data: listarTarefas }); //chamada para carregar os dados
+    //criado outro mock para aplicar filtro
+    axiosMock.get.mockResolvedValueOnce({
+      data: {
+        totalItens: 1,
+        tarefas: [new Tarefa(1, nomePrimeiraTarefa, false)],
+        pagina: 1,
+      },
+    });
+
+    const { findByTestId } = render(<ListarTarefas />);
+    fireEvent.change(await findByTestId('txt-tarefa'), {
       target: { value: nomePrimeiraTarefa },
     });
-    const tabela = getByTestId('tabela');
+    const tabela = await findByTestId('tabela');
     expect(tabela).toHaveTextContent(nomePrimeiraTarefa);
     expect(tabela).not.toHaveTextContent(nomeSegundaTarefa);
     expect(tabela).not.toHaveTextContent(nomeTerceiraTarefa);
