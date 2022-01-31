@@ -1,6 +1,5 @@
 import RemoverTarefa from './remover-tarefa';
 import Tarefa from '../models/tarefa.models';
-import ReactDOM from 'react-dom';
 import { render, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import axiosMock from 'axios';
